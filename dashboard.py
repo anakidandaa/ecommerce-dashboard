@@ -8,7 +8,7 @@ import urllib
 # Load data
 @st.cache_data
 def load_data():
-    all_df = pd.read_csv("all_df_cleaned.csv")
+   all_df = pd.read_csv("main_data.csv")
     return all_df
 
 df = load_data()
