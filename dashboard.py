@@ -3,10 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from babel.numbers import format_currency
 
+# Set tema seaborn
 sns.set(style='dark')
 
+# Fungsi untuk memuat data
 def load_data():
     FILE_PATH = "all_df_cleaned.csv"
     if os.path.exists(FILE_PATH):
@@ -19,36 +20,39 @@ def load_data():
         else:
             st.stop()
 
+# Load data
 all_df = load_data()
+
+# Konversi kolom datetime
 all_df["order_purchase_timestamp"] = pd.to_datetime(all_df["order_purchase_timestamp"])
 
+# Sidebar untuk filter tanggal dan state
 with st.sidebar:
-    try:
-        st.image("https://raw.githubusercontent.com/anakidandaa/ecommerce-dashboard/refs/heads/main/logo-Photoroom.png")
-    except:
-        st.write("Logo tidak tersedia.")
+    st.image("https://raw.githubusercontent.com/anakidandaa/ecommerce-dashboard/refs/heads/main/logo-Photoroom.png")
 
     min_date = all_df["order_purchase_timestamp"].min().date()
     max_date = all_df["order_purchase_timestamp"].max().date()
 
-    date_range = st.date_input(
+    start_date, end_date = st.date_input(
         label='Rentang Waktu', min_value=min_date,
         max_value=max_date, value=[min_date, max_date]
     )
 
-    if len(date_range) != 2:
-        st.error("Silakan pilih rentang waktu yang lengkap (mulai dan akhir).")
-        st.stop()
-    else:
-        start_date, end_date = date_range
+    # Pilihan State
+    states = all_df["customer_state"].unique().tolist()
+    selected_states = st.multiselect("Pilih State", states, default=states)
 
+# Filter data berdasarkan tanggal dan state yang dipilih
 main_df = all_df[
     (all_df["order_purchase_timestamp"] >= pd.to_datetime(start_date)) &
-    (all_df["order_purchase_timestamp"] <= pd.to_datetime(end_date))
+    (all_df["order_purchase_timestamp"] <= pd.to_datetime(end_date)) &
+    (all_df["customer_state"].isin(selected_states))
 ].copy()
 
+# Dashboard Title
 st.header('TAMEE-COMMERCE DASHBOARD 🐯')
 
+# Produk Terlaris & Tidak Laku
 st.subheader("Produk Terlaris & Tidak Laku")
 sum_order_items_df = main_df.groupby("product_category_name_english")["product_id"].count().reset_index()
 sum_order_items_df = sum_order_items_df.rename(columns={"product_id": "products"})
@@ -63,6 +67,7 @@ ax[1].set_title("Bottom 5 Produk Paling Tidak Laku")
 
 st.pyplot(fig)
 
+# Wilayah dengan Customer Terbanyak
 st.subheader("Wilayah dengan Customer Terbanyak")
 customer_by_state = main_df.groupby("customer_state")["customer_unique_id"].nunique().reset_index()
 customer_by_state = customer_by_state.sort_values(by="customer_unique_id", ascending=False)
@@ -75,6 +80,7 @@ ax.set_ylabel("Jumlah Customer")
 
 st.pyplot(fig)
 
+# Tren Order Tahunan
 st.subheader("Tren Order dalam Beberapa Tahun Terakhir")
 main_df["year"] = main_df["order_purchase_timestamp"].dt.year
 order_trend = main_df.groupby("year")["order_id"].count().reset_index()
@@ -87,4 +93,5 @@ ax.set_ylabel("Jumlah Order")
 
 st.pyplot(fig)
 
-st.caption('Copyright © anakidanda 2024')
+# Footer
+st.caption('Copyright © TAMEE 2023')
