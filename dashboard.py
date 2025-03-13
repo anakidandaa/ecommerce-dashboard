@@ -30,7 +30,7 @@ all_df["order_purchase_timestamp"] = pd.to_datetime(all_df["order_purchase_times
 # Sidebar untuk filter tanggal
 with st.sidebar:
     try:
-        st.image("https://github.com/dicodingacademy/assets/raw/main/logo.png")
+        st.image("https://github.com/anakidandaa/ecommerce-dashboard/blob/main/logo-Photoroom.png")
     except:
         st.write("Logo tidak tersedia.")
 
@@ -100,4 +100,4 @@ ax.set_ylabel("Jumlah Order")
 st.pyplot(fig)
 
 # Footer
-st.caption('Copyright © Dicoding 2023')
+st.caption('Copyright © anakidanda 2025')
