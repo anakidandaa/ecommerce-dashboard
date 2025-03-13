@@ -37,10 +37,17 @@ with st.sidebar:
     min_date = all_df["order_purchase_timestamp"].min().date()
     max_date = all_df["order_purchase_timestamp"].max().date()
 
-    start_date, end_date = st.date_input(
+    date_range = st.date_input(
         label='Rentang Waktu', min_value=min_date,
         max_value=max_date, value=[min_date, max_date]
     )
+
+    # Validasi input tanggal
+    if len(date_range) != 2:
+        st.error("Silakan pilih rentang waktu yang lengkap (mulai dan akhir).")
+        st.stop()
+    else:
+        start_date, end_date = date_range
 
 # Filter data berdasarkan tanggal
 main_df = all_df[
