@@ -42,9 +42,14 @@ with st.sidebar:
     else:
         start_date, end_date = date_range
 
+    # Filter kategori produk
+    all_categories = all_df["product_category_name_english"].dropna().unique()
+    selected_categories = st.multiselect("Pilih Kategori Produk", options=all_categories, default=all_categories[:5])
+
 main_df = all_df[
-    (all_df["order_purchase_timestamp"] >= pd.to_datetime(start_date)) &
-    (all_df["order_purchase_timestamp"] <= pd.to_datetime(end_date))
+    (all_df["order_purchase_timestamp"] >= pd.to_datetime(start_date)) & 
+    (all_df["order_purchase_timestamp"] <= pd.to_datetime(end_date)) & 
+    (all_df["product_category_name_english"].isin(selected_categories))
 ].copy()
 
 st.header('TAMEE-COMMERCE DASHBOARD 🐯')
