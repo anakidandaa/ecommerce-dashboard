@@ -47,7 +47,7 @@ main_df = all_df[
     (all_df["order_purchase_timestamp"] <= pd.to_datetime(end_date))
 ].copy()
 
-st.header('Dicoding Collection Dashboard :sparkles:')
+st.header('TAMEE-COMMERCE DASHBOARD 🐯')
 
 st.subheader("Produk Terlaris & Tidak Laku")
 sum_order_items_df = main_df.groupby("product_category_name_english")["product_id"].count().reset_index()
